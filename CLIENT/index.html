@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookVault</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- LIST PAGE -->
+    <section id="listPage" class="page active">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-icon">📘</div>
+          <div class="brand-name">BookVault</div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="search-wrap">
+            <span class="search-icon">⌕</span>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search"
+              autocomplete="off"
+            />
+          </div>
+
+          <button id="openAddBtn" class="btn btn-primary">
+            + Add New Book
+          </button>
+        </div>
+      </header>
+
+      <main class="page-content">
+        <div class="page-header-row">
+          <div>
+            <h1 class="page-title">Book Inventory</h1>
+          </div>
+
+          <div class="filter-inline">
+            <span class="filter-icon">⌁</span>
+            <label for="statusFilter">Filter by status</label>
+            <select id="statusFilter">
+              <option value="all">All</option>
+              <option value="Read">Read</option>
+              <option value="Reading">Reading</option>
+              <option value="Currently Reading">Currently Reading</option>
+              <option value="Want to Read">Want to Read</option>
+              <option value="Borrowed">Borrowed</option>
+              <option value="Available">Available</option>
+              <option value="Reserved">Reserved</option>
+            </select>
+          </div>
+        </div>
+
+        <section class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>TITLE</th>
+                <th>AUTHOR</th>
+                <th>GENRE</th>
+                <th>STATUS</th>
+                <th class="actions-head">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="bookTableBody">
+              <tr>
+                <td colspan="5" class="empty-row">Loading books...</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <div class="table-footer">
+          <div id="bookCountText">Showing 0 of 0 books</div>
+          <div class="pager">
+            <button id="prevPageBtn" class="pager-btn">‹</button>
+            <button id="nextPageBtn" class="pager-btn">›</button>
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <!-- DETAILS PAGE -->
+    <section id="detailsPage" class="page">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-icon">📘</div>
+          <div class="brand-name">BookVault</div>
+        </div>
+
+        <div class="details-actions-top">
+          <button id="detailsBackBtnTop" class="square-btn">←</button>
+          <button id="detailsEditBtnTop" class="square-btn">✎</button>
+          <button id="detailsDeleteBtnTop" class="square-btn danger-lite">🗑</button>
+        </div>
+      </header>
+
+      <main class="details-layout">
+        <div class="breadcrumbs">Library &nbsp;›&nbsp; Book Details</div>
+
+        <div class="details-main-grid">
+          <div class="details-left">
+            <div class="book-cover-card">
+              <div class="book-cover-shadow"></div>
+              <div class="book-cover"></div>
+            </div>
+
+            <div class="reading-state" id="detailsReadingStateText">CURRENTLY READING</div>
+
+            <div class="progress-track">
+              <div class="progress-bar" id="detailsProgressBar"></div>
+            </div>
+
+            <div class="progress-text" id="detailsProgressText">65% Completed</div>
+          </div>
+
+          <div class="details-right">
+            <h1 id="detailsTitle" class="details-title">The Midnight Library</h1>
+            <div id="detailsAuthor" class="details-author">Matt Haig</div>
+
+            <div class="pill-row">
+              <span id="detailsGenre" class="pill active-pill">Fiction</span>
+              <span id="detailsGenreSecondary1" class="pill">Fantasy</span>
+              <span id="detailsGenreSecondary2" class="pill">Contemporary</span>
+            </div>
+
+            <div class="meta-box-row">
+              <div class="meta-box">
+                <div class="meta-label">RATING</div>
+                <div class="meta-value-line">
+                  <span id="detailsRatingNumber" class="meta-value">4.2</span>
+                  <span>/ 5</span>
+                </div>
+                <div id="detailsStars" class="stars">★★★★☆</div>
+              </div>
+
+              <div class="meta-box">
+                <div class="meta-label">PUBLISHED</div>
+                <div id="detailsYear" class="meta-year">2020</div>
+                <div class="meta-subtext">BookVault Edition</div>
+              </div>
+            </div>
+
+            <div class="section-title">Description</div>
+            <div id="detailsDescription" class="details-description">
+              Somewhere out beyond the edge of the universe there is a library that contains an infinite number of books...
+            </div>
+
+            <div class="bottom-meta-row">
+              <div>
+                <div class="bottom-label">FORMAT</div>
+                <div class="bottom-value">Hardcover</div>
+              </div>
+              <div>
+                <div class="bottom-label">LANGUAGE</div>
+                <div class="bottom-value">English</div>
+              </div>
+              <div>
+                <div class="bottom-label">PAGES</div>
+                <div id="detailsPages" class="bottom-value">304 pages</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <!-- FORM PAGE -->
+    <section id="formPage" class="page">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-icon">📘</div>
+          <div class="brand-name">BookVault</div>
+        </div>
+
+        <button id="formDeleteBtnTop" class="square-btn danger-lite hidden">🗑</button>
+      </header>
+
+      <main class="form-page-wrap">
+        <div class="back-link">
+          <button id="backToLibraryBtn" class="text-link">← Back to Library</button>
+        </div>
+
+        <div class="form-header-block">
+          <h1 id="formPageTitle" class="form-page-title">Edit Book</h1>
+          <p id="formPageSubtitle" class="form-page-subtitle">
+            Modify the details for this entry in your collection.
+          </p>
+        </div>
+
+        <section class="form-card">
+          <form id="bookForm">
+            <input type="hidden" id="bookId" />
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="title">TITLE</label>
+                <input id="title" type="text" required />
+              </div>
+
+              <div class="form-group">
+                <label for="author">AUTHOR</label>
+                <input id="author" type="text" required />
+              </div>
+
+              <div class="form-group">
+                <label for="genre">GENRE</label>
+                <select id="genre" required>
+                  <option value="">Select genre</option>
+                  <option>Classic</option>
+                  <option>Fantasy</option>
+                  <option>Fiction</option>
+                  <option>Dystopian</option>
+                  <option>Adventure</option>
+                  <option>Historical</option>
+                  <option>Thriller</option>
+                  <option>Non-Fiction</option>
+                  <option>Self-Help</option>
+                  <option>Finance</option>
+                  <option>Sci-Fi</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="published_year">PUBLISHED YEAR</label>
+                <input id="published_year" type="number" min="1000" max="9999" required />
+              </div>
+
+              <div class="form-group">
+                <label for="rating">RATING</label>
+                <select id="rating" required>
+                  <option value="1">1 / 5 Stars</option>
+                  <option value="2">2 / 5 Stars</option>
+                  <option value="3">3 / 5 Stars</option>
+                  <option value="4">4 / 5 Stars</option>
+                  <option value="5">5 / 5 Stars</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="status-row">
+              <label class="status-label">STATUS</label>
+              <div class="radio-row">
+                <label><input type="radio" name="statusRadio" value="Read" checked /> Read</label>
+                <label><input type="radio" name="statusRadio" value="Currently Reading" /> Currently Reading</label>
+                <label><input type="radio" name="statusRadio" value="Want to Read" /> Want to Read</label>
+              </div>
+            </div>
+
+            <div class="form-group description-group">
+              <label for="description">DESCRIPTION</label>
+              <textarea id="description" rows="6" required></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="cancelFormBtn" class="btn btn-secondary">Cancel</button>
+              <button type="submit" id="saveBookBtn" class="btn btn-primary">Update Book</button>
+            </div>
+          </form>
+        </section>
+
+        <div class="footer-mini-links">
+          <span>▦ ARCHIVE</span>
+          <span>▣ STATS</span>
+          <span>⇪ EXPORT</span>
+        </div>
+
+        <div class="footer-note">© 2023 BookVault Library Management. Modern Minimal Wireframe Interface.</div>
+      </main>
+    </section>
+  </div>
+
+  <!-- DELETE MODAL -->
+  <div id="deleteModal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-card">
+      <div class="trash-badge">🗑</div>
+      <h2>Delete Book</h2>
+      <p id="deleteMessage">
+        Are you sure you want to remove this book from your vault? This action cannot be undone.
+      </p>
+
+      <div class="delete-preview">
+        <div class="mini-cover"></div>
+        <div>
+          <div id="deleteBookTitle" class="delete-book-title">1984</div>
+          <div id="deleteBookAuthor" class="delete-book-author">George Orwell</div>
+        </div>
+      </div>
+
+      <button id="confirmDeleteBtn" class="btn btn-danger full-btn">Confirm Delete</button>
+      <button id="cancelDeleteBtn" class="btn btn-light full-btn">Cancel</button>
+
+      <div class="security-note">BOOKVAULT SECURITY PROTOCOL</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

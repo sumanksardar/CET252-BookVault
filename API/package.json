@@ -1,0 +1,30 @@
+{
+  "name": "bookvault-api",
+  "version": "1.0.0",
+  "description": "BookVault REST API using Node, Express and SQLite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "init-db": "node database/init.js",
+    "seed-db": "node database/seed.js",
+    "docs": "apidoc -i routes/ -o ../APIDOC"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "sqlite",
+    "api"
+  ],
+  "author": "Suman",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "apidoc": "^1.2.0",
+    "nodemon": "^3.1.14"
+  }
+}
