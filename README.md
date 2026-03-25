@@ -1,4 +1,4 @@
-## Version 1.0 Final Submission
+## Final Submission
 
 # BookVault – Digital Library Management System
 
