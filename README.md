@@ -87,20 +87,32 @@ http://localhost:3000
 
 ---
 
-###  Run Frontend Client
+## Client Application Setup
 
-```bash
-cd CLIENT
-npm install
-npm start
-```
+To run the client application locally, follow these steps:
 
-Client runs at:
-```
-http://localhost:5500
-```
+1. Navigate to the CLIENT folder:
+   cd CLIENT
 
----
+2. Install dependencies:
+   npm install
+
+3. Start the client using live-server:
+   npx live-server
+
+4. Ensure the backend server is running on:
+   http://localhost:3000
+
+The client will open automatically in your browser.
+
+## Features
+
+- View all books (GET)
+- Add a new book (POST)
+- Edit existing book (PUT)
+- Delete a book (DELETE)
+
+The client interacts with the REST API and displays data dynamically.
 
 ### Open Application
 
