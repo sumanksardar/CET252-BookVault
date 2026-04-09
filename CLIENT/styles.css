@@ -339,7 +339,7 @@ td strong {
 .book-cover-card {
   width: 174px;
   height: 228px;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #efeee7;
   position: relative;
   display: flex;
