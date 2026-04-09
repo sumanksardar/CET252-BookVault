@@ -30,10 +30,13 @@ This project was developed as part of the **CET252 module**.
 ```
 CET252/
 │
-├── API/        → Backend (Node.js + Express)
-├── CLIENT/     → Frontend (HTML, CSS, JavaScript)
-├── APIDOC/     → Generated API documentation
-└── README.md   → Project documentation
+├── API/         → Backend (Node.js + Express)
+├── CLIENT/      → Frontend (HTML, CSS, JavaScript)
+├── APIDOC/      → Generated API documentation
+├── FIGMA/       → Wireframe and high-fidelity design PDFs
+├── KANBAN/      → Trello board screenshots/evidence
+├── .gitignore   → Ignores node_modules and unnecessary files
+└── README.md    → Project documentation
 ```
 
 ---
@@ -77,12 +80,12 @@ CET252/
 ```bash
 cd API
 npm install
-npm start
+npm run dev
 ```
 
 API runs at:
 ```
-http://localhost:3000
+http://localhost:3001
 ```
 
 ---
@@ -93,6 +96,8 @@ To run the client application locally, follow these steps:
 
 1. Navigate to the CLIENT folder:
    cd CLIENT
+npm install
+npx live-server --port=5500
 
 2. Install dependencies:
    npm install
@@ -105,14 +110,6 @@ To run the client application locally, follow these steps:
 
 The client will open automatically in your browser.
 
-## Features
-
-- View all books (GET)
-- Add a new book (POST)
-- Edit existing book (PUT)
-- Delete a book (DELETE)
-
-The client interacts with the REST API and displays data dynamically.
 
 ### Open Application
 
@@ -142,7 +139,8 @@ npm test
 
 APIDOC is generated inside:
 ```
-APIDOC/index.html
+cd APIDOC
+python3 -m http.server 8080
 ```
 
 Open it in browser to view all endpoints.
@@ -157,7 +155,48 @@ Open it in browser to view all endpoints.
 4. Frontend dynamically updates UI  
 
 ---
+# Figma Design Documentation
 
+This folder contains the design artefacts produced for the BookVault prototype as part of the CET252 portfolio task.
+
+## Files Included
+
+- `WIREFRAME.pdf` – low-fidelity wireframe used for the initial planning of layout and navigation
+- `Design1-Standard.pdf` – standard user interface design
+- `Design2-Dark.pdf` – dark theme interface design
+- `Design3-Vibrant.pdf` – vibrant colour-based interface design
+
+## Overview
+
+These files document the design stage of the project before final development. The wireframe was used to define the core structure of the application, including page layout, content areas, and user interaction points. The design concepts were then created to explore multiple possible visual styles for the final prototype.
+
+## Design Purpose
+
+The design work was used to:
+
+- plan the overall structure of the application
+- visualise alternative interface styles
+- support consistency in layout and presentation
+- guide implementation of the final client application
+
+## Project Relevance
+
+These documents provide evidence of the design and planning process undertaken before and during development. They are included to support the final submission and demonstrate the transition from concept design to functional prototype.
+---
+## Kanban Board
+
+This project was planned and managed using a Trello Kanban board.
+
+🔗 Trello Board:
+https://trello.com/b/t96PrwhJ/cet252-bookvault-b2
+
+Screenshots of the Trello board are also included in the KANBAN folder as submission evidence.
+
+The board includes:
+- To Do tasks
+- Work in progress
+- Completed tasks
+- User stories and planning details
 ##  Key Concepts Demonstrated
 
 - RESTful API design  

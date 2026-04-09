@@ -1,253 +1,301 @@
-const express = require("express");
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
 const router = express.Router();
+const dbPath = path.join(__dirname, '../database/books.db');
 
-// In-memory book data (20 books)
-let books = [
-  {
-    id: 1,
-    title: "The Hobbit",
-    author: "J.R.R. Tolkien",
-    genre: "Fantasy",
-    published_year: 1937,
-    rating: 5,
-    status: "Read",
-    description: "A fantasy adventure following Bilbo Baggins."
-  },
-  {
-    id: 2,
-    title: "1984",
-    author: "George Orwell",
-    genre: "Dystopian",
-    published_year: 1949,
-    rating: 5,
-    status: "Read",
-    description: "A dystopian novel about surveillance and control."
-  },
-  {
-    id: 3,
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    genre: "Classic",
-    published_year: 1925,
-    rating: 5,
-    status: "Read",
-    description: "A story of wealth, love, and the American Dream."
-  },
-  {
-    id: 4,
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    genre: "Classic",
-    published_year: 1960,
-    rating: 5,
-    status: "Read",
-    description: "A novel about justice and racial inequality."
-  },
-  {
-    id: 5,
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    genre: "Fiction",
-    published_year: 1988,
-    rating: 4,
-    status: "Reading",
-    description: "A philosophical story about following your dreams."
-  },
-  {
-    id: 6,
-    title: "Pride and Prejudice",
-    author: "Jane Austen",
-    genre: "Classic",
-    published_year: 1813,
-    rating: 5,
-    status: "Read",
-    description: "A classic novel about love, class, and marriage."
-  },
-  {
-    id: 7,
-    title: "Brave New World",
-    author: "Aldous Huxley",
-    genre: "Sci-Fi",
-    published_year: 1932,
-    rating: 4,
-    status: "Read",
-    description: "A futuristic society controlled by technology."
-  },
-  {
-    id: 8,
-    title: "The Catcher in the Rye",
-    author: "J.D. Salinger",
-    genre: "Fiction",
-    published_year: 1951,
-    rating: 4,
-    status: "Read",
-    description: "A story of teenage rebellion and identity."
-  },
-  {
-    id: 9,
-    title: "Moby Dick",
-    author: "Herman Melville",
-    genre: "Adventure",
-    published_year: 1851,
-    rating: 3,
-    status: "Want to Read",
-    description: "A sea captain's obsession with a giant whale."
-  },
-  {
-    id: 10,
-    title: "War and Peace",
-    author: "Leo Tolstoy",
-    genre: "Historical",
-    published_year: 1869,
-    rating: 5,
-    status: "Want to Read",
-    description: "A historical novel set during the Napoleonic Wars."
-  },
-  {
-    id: 11,
-    title: "Crime and Punishment",
-    author: "Fyodor Dostoevsky",
-    genre: "Classic",
-    published_year: 1866,
-    rating: 5,
-    status: "Read",
-    description: "A psychological novel about guilt and redemption."
-  },
-  {
-    id: 12,
-    title: "The Lord of the Rings",
-    author: "J.R.R. Tolkien",
-    genre: "Fantasy",
-    published_year: 1954,
-    rating: 5,
-    status: "Currently Reading",
-    description: "An epic journey to destroy the One Ring."
-  },
-  {
-    id: 13,
-    title: "Harry Potter and the Sorcerer's Stone",
-    author: "J.K. Rowling",
-    genre: "Fantasy",
-    published_year: 1997,
-    rating: 5,
-    status: "Read",
-    description: "A young wizard begins his magical journey."
-  },
-  {
-    id: 14,
-    title: "The Da Vinci Code",
-    author: "Dan Brown",
-    genre: "Thriller",
-    published_year: 2003,
-    rating: 4,
-    status: "Read",
-    description: "A mystery involving secret societies and symbols."
-  },
-  {
-    id: 15,
-    title: "The Midnight Library",
-    author: "Matt Haig",
-    genre: "Fiction",
-    published_year: 2020,
-    rating: 4,
-    status: "Currently Reading",
-    description: "A library that lets you explore alternate lives."
-  },
-  {
-    id: 16,
-    title: "Sapiens",
-    author: "Yuval Noah Harari",
-    genre: "Non-Fiction",
-    published_year: 2011,
-    rating: 5,
-    status: "Read",
-    description: "A brief history of humankind."
-  },
-  {
-    id: 17,
-    title: "Atomic Habits",
-    author: "James Clear",
-    genre: "Self-Help",
-    published_year: 2018,
-    rating: 5,
-    status: "Read",
-    description: "A guide to building good habits."
-  },
-  {
-    id: 18,
-    title: "Rich Dad Poor Dad",
-    author: "Robert Kiyosaki",
-    genre: "Finance",
-    published_year: 1997,
-    rating: 4,
-    status: "Read",
-    description: "Lessons about money and investing."
-  },
-  {
-    id: 19,
-    title: "The Psychology of Money",
-    author: "Morgan Housel",
-    genre: "Finance",
-    published_year: 2020,
-    rating: 5,
-    status: "Currently Reading",
-    description: "Understanding how people think about money."
-  },
-  {
-    id: 20,
-    title: "Think and Grow Rich",
-    author: "Napoleon Hill",
-    genre: "Self-Help",
-    published_year: 1937,
-    rating: 4,
-    status: "Want to Read",
-    description: "A classic book on success and mindset."
-  }
-];
+/**
+ * @api {get} /api/books Get all books
+ * @apiName GetAllBooks
+ * @apiGroup Books
+ * @apiDescription Returns all books stored in the SQLite database.
+ *
+ * @apiSuccess {Object[]} books List of book objects.
+ * @apiSuccess {Number} books.id Unique book ID.
+ * @apiSuccess {String} books.title Book title.
+ * @apiSuccess {String} books.author Book author.
+ * @apiSuccess {String} books.genre Book genre.
+ * @apiSuccess {Number} books.published_year Year published.
+ * @apiSuccess {Number} books.rating Rating out of 5.
+ * @apiSuccess {String} books.status Reading status.
+ * @apiSuccess {String} books.description Short description.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 200 OK
+ * [
+ *   {
+ *     "id": 1,
+ *     "title": "The Hobbit",
+ *     "author": "J.R.R. Tolkien",
+ *     "genre": "Fantasy",
+ *     "published_year": 1937,
+ *     "rating": 4.8,
+ *     "status": "Read",
+ *     "description": "A fantasy adventure following Bilbo Baggins."
+ *   }
+ * ]
+ *
+ * @apiError InternalServerError Failed to retrieve books.
+ * @apiErrorExample {json} Error-Response:
+ * HTTP/1.1 500 Internal Server Error
+ * {
+ *   "error": "Failed to retrieve books"
+ * }
+ */
+router.get('/', (req, res) => {
+  const db = new sqlite3.Database(dbPath);
 
-// GET all books
-router.get("/", (req, res) => {
-  res.json(books);
+  db.all('SELECT * FROM books', [], (err, rows) => {
+    db.close();
+
+    if (err) {
+      return res.status(500).json({ error: 'Failed to retrieve books' });
+    }
+
+    res.status(200).json(rows);
+  });
 });
 
-// GET book by ID
-router.get("/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const book = books.find(b => b.id === id);
+/**
+ * @api {get} /api/books/:id Get a single book
+ * @apiName GetSingleBook
+ * @apiGroup Books
+ * @apiDescription Returns one book by its unique ID.
+ *
+ * @apiParam {Number} id Book unique ID.
+ *
+ * @apiSuccess {Number} id Unique book ID.
+ * @apiSuccess {String} title Book title.
+ * @apiSuccess {String} author Book author.
+ * @apiSuccess {String} genre Book genre.
+ * @apiSuccess {Number} published_year Year published.
+ * @apiSuccess {Number} rating Rating out of 5.
+ * @apiSuccess {String} status Reading status.
+ * @apiSuccess {String} description Short description.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 200 OK
+ * {
+ *   "id": 1,
+ *   "title": "The Hobbit",
+ *   "author": "J.R.R. Tolkien",
+ *   "genre": "Fantasy",
+ *   "published_year": 1937,
+ *   "rating": 4.8,
+ *   "status": "Read",
+ *   "description": "A fantasy adventure following Bilbo Baggins."
+ * }
+ *
+ * @apiError NotFound Book not found.
+ * @apiError InternalServerError Failed to retrieve book.
+ *
+ * @apiErrorExample {json} NotFound-Response:
+ * HTTP/1.1 404 Not Found
+ * {
+ *   "error": "Book not found"
+ * }
+ *
+ * @apiErrorExample {json} InternalServerError-Response:
+ * HTTP/1.1 500 Internal Server Error
+ * {
+ *   "error": "Failed to retrieve book"
+ * }
+ */
+router.get('/:id', (req, res) => {
+  const db = new sqlite3.Database(dbPath);
+  const { id } = req.params;
 
-  if (!book) return res.status(404).json({ message: "Book not found" });
+  db.get('SELECT * FROM books WHERE id = ?', [id], (err, row) => {
+    db.close();
 
-  res.json(book);
+    if (err) {
+      return res.status(500).json({ error: 'Failed to retrieve book' });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    res.status(200).json(row);
+  });
 });
 
-// POST new book
-router.post("/", (req, res) => {
-  const newBook = {
-    id: books.length ? books[books.length - 1].id + 1 : 1,
-    ...req.body
-  };
+/**
+ * @api {post} /api/books Add a new book
+ * @apiName PostBook
+ * @apiGroup Books
+ * @apiDescription Adds a new book record to the SQLite database.
+ *
+ * @apiBody {String} title Book title (required).
+ * @apiBody {String} author Book author (required).
+ * @apiBody {String} genre Book genre (required).
+ * @apiBody {Number} published_year Year published (required).
+ * @apiBody {Number} [rating] Rating out of 5.
+ * @apiBody {String} status Read / Reading / Unread (required).
+ * @apiBody {String} [description] Short description.
+ *
+ * @apiSuccess {String} message Confirmation message.
+ * @apiSuccess {Number} id Newly created book ID.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 201 Created
+ * {
+ *   "message": "Book added successfully",
+ *   "id": 21
+ * }
+ *
+ * @apiError InternalServerError Failed to add book.
+ * @apiErrorExample {json} Error-Response:
+ * HTTP/1.1 500 Internal Server Error
+ * {
+ *   "error": "Failed to add book"
+ * }
+ */
+router.post('/', (req, res) => {
+  const db = new sqlite3.Database(dbPath);
+  const { title, author, genre, published_year, rating, status, description } = req.body;
 
-  books.push(newBook);
-  res.status(201).json(newBook);
+  const query = `
+    INSERT INTO books (title, author, genre, published_year, rating, status, description)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.run(
+    query,
+    [title, author, genre, published_year, rating, status, description],
+    function (err) {
+      db.close();
+
+      if (err) {
+        return res.status(500).json({ error: 'Failed to add book' });
+      }
+
+      res.status(201).json({
+        message: 'Book added successfully',
+        id: this.lastID
+      });
+    }
+  );
 });
 
-// PUT update book
-router.put("/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = books.findIndex(b => b.id === id);
+/**
+ * @api {put} /api/books/:id Update a book
+ * @apiName UpdateBook
+ * @apiGroup Books
+ * @apiDescription Updates an existing book by its ID.
+ *
+ * @apiParam {Number} id Book unique ID.
+ *
+ * @apiBody {String} title Book title.
+ * @apiBody {String} author Book author.
+ * @apiBody {String} genre Book genre.
+ * @apiBody {Number} published_year Year published.
+ * @apiBody {Number} [rating] Rating out of 5.
+ * @apiBody {String} status Read / Reading / Unread.
+ * @apiBody {String} [description] Short description.
+ *
+ * @apiSuccess {String} message Confirmation message.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 200 OK
+ * {
+ *   "message": "Book updated successfully"
+ * }
+ *
+ * @apiError NotFound Book not found.
+ * @apiError InternalServerError Failed to update book.
+ *
+ * @apiErrorExample {json} NotFound-Response:
+ * HTTP/1.1 404 Not Found
+ * {
+ *   "error": "Book not found"
+ * }
+ *
+ * @apiErrorExample {json} InternalServerError-Response:
+ * HTTP/1.1 500 Internal Server Error
+ * {
+ *   "error": "Failed to update book"
+ * }
+ */
+router.put('/:id', (req, res) => {
+  const db = new sqlite3.Database(dbPath);
+  const { id } = req.params;
+  const { title, author, genre, published_year, rating, status, description } = req.body;
 
-  if (index === -1) return res.status(404).json({ message: "Book not found" });
+  const query = `
+    UPDATE books
+    SET title = ?, author = ?, genre = ?, published_year = ?, rating = ?, status = ?, description = ?
+    WHERE id = ?
+  `;
 
-  books[index] = { ...books[index], ...req.body };
-  res.json(books[index]);
+  db.run(
+    query,
+    [title, author, genre, published_year, rating, status, description, id],
+    function (err) {
+      db.close();
+
+      if (err) {
+        return res.status(500).json({ error: 'Failed to update book' });
+      }
+
+      if (this.changes === 0) {
+        return res.status(404).json({ error: 'Book not found' });
+      }
+
+      res.status(200).json({ message: 'Book updated successfully' });
+    }
+  );
 });
 
-// DELETE book
-router.delete("/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  books = books.filter(b => b.id !== id);
+/**
+ * @api {delete} /api/books/:id Delete a book
+ * @apiName DeleteBook
+ * @apiGroup Books
+ * @apiDescription Deletes a book by its ID.
+ *
+ * @apiParam {Number} id Book unique ID.
+ *
+ * @apiSuccess {String} message Confirmation message.
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 200 OK
+ * {
+ *   "message": "Book deleted successfully"
+ * }
+ *
+ * @apiError NotFound Book not found.
+ * @apiError InternalServerError Failed to delete book.
+ *
+ * @apiErrorExample {json} NotFound-Response:
+ * HTTP/1.1 404 Not Found
+ * {
+ *   "error": "Book not found"
+ * }
+ *
+ * @apiErrorExample {json} InternalServerError-Response:
+ * HTTP/1.1 500 Internal Server Error
+ * {
+ *   "error": "Failed to delete book"
+ * }
+ */
+router.delete('/:id', (req, res) => {
+  const db = new sqlite3.Database(dbPath);
+  const { id } = req.params;
 
-  res.json({ message: "Book deleted successfully" });
+  db.run('DELETE FROM books WHERE id = ?', [id], function (err) {
+    db.close();
+
+    if (err) {
+      return res.status(500).json({ error: 'Failed to delete book' });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    res.status(200).json({ message: 'Book deleted successfully' });
+  });
 });
 
 module.exports = router;

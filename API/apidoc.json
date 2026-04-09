@@ -3,5 +3,5 @@
   "version": "1.0.0",
   "description": "REST API for the BookVault Book Collection Manager",
   "title": "BookVault API Documentation",
-  "url": "http://localhost:3000"
+  "url": "http://localhost:3001"
 }
